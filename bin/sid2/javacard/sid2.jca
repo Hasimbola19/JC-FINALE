@@ -1,0 +1,556 @@
+// converted by version 1.3
+// on Tue Jan 25 13:03:31 MSK 2022
+
+.package sid2 {
+	.aid 0x7C:0xF:0x1B:0x1:0x88;
+	.version 1.0;
+
+	.imports {
+		0xA0:0x0:0x0:0x0:0x62:0x1:0x1 1.3;		//javacard/framework
+		0xA0:0x0:0x0:0x0:0x62:0x0:0x1 1.0;		//java/lang
+	}
+
+	.applet {
+		0x7C:0xF:0x1B:0x1:0x88:0x1 CompteurApplet;
+	}
+
+	.constantPool {
+		// 0
+		instanceFieldRef 0.9 CompteurApplet/pin;
+		// 1
+		instanceFieldRef 0.9 CompteurApplet/puc;
+		// 2
+		instanceFieldRef byte[] CompteurApplet/tmp;
+		// 3
+		instanceFieldRef short CompteurApplet/balance;
+		// 4
+		classRef CompteurApplet;
+		// 5
+		classRef 0.9;		// javacard/framework/OwnerPIN
+		// 6
+		staticMethodRef 0.9.0(BB)V;		// javacard/framework/OwnerPIN.<init>(BB)V
+		// 7
+		staticFieldRef byte CompteurApplet/state;
+		// 8
+		staticMethodRef 0.8.13(SB)[B;		// javacard/framework/JCSystem.makeTransientByteArray(SB)[B
+		// 9
+		staticMethodRef 0.3.0()V;		// javacard/framework/Applet.<init>()V
+		// 10
+		virtualMethodRef 0.9.8([BSB)V;		// update([BSB)V
+		// 11
+		virtualMethodRef 0.3.1()V;		// register()V
+		// 12
+		virtualMethodRef 0.9.2()B;		// getTriesRemaining()B
+		// 13
+		virtualMethodRef 0.9.5()V;		// reset()V
+		// 14
+		virtualMethodRef 0.3.3()Z;		// selectingApplet()Z
+		// 15
+		virtualMethodRef 0.10.1()[B;		// getBuffer()[B
+		// 16
+		staticMethodRef 0.7.1(S)V;		// javacard/framework/ISOException.throwIt(S)V
+		// 17
+		staticMethodRef CompteurApplet/getBalance(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 18
+		staticMethodRef CompteurApplet/debit(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 19
+		staticMethodRef CompteurApplet/credit(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 20
+		staticMethodRef CompteurApplet/init(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 21
+		staticMethodRef CompteurApplet/verify(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 22
+		staticMethodRef CompteurApplet/changePin(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 23
+		virtualMethodRef 0.9.6()V;		// resetAndUnblock()V
+		// 24
+		virtualMethodRef 0.9.4()Z;		// isValidated()Z
+		// 25
+		virtualMethodRef 0.10.6()S;		// setIncomingAndReceive()S
+		// 26
+		staticMethodRef CompteurApplet/unsigned(B)S;
+		// 27
+		staticMethodRef CompteurApplet/<init>([BSB)V;
+		// 28
+		virtualMethodRef 0.10.7()S;		// setOutgoing()S
+		// 29
+		virtualMethodRef 0.10.9(S)V;		// setOutgoingLength(S)V
+		// 30
+		virtualMethodRef 0.10.4(SS)V;		// sendBytes(SS)V
+		// 31
+		virtualMethodRef 0.9.1([BSB)Z;		// check([BSB)Z
+	}
+
+	.class public CompteurApplet 0 extends 0.3 {		// extends javacard/framework/Applet
+
+		.fields {
+			 0.9 pin 0;		// Ljavacard/framework/OwnerPIN;
+			 0.9 puc 1;		// Ljavacard/framework/OwnerPIN;
+			 byte[] tmp 2;		// [B
+			 short balance 3;		// S
+			static final byte Wallet_CLA = -80;		// B
+			static final byte INIT = 16;		// B
+			static final byte VERIFY = 32;		// B
+			static final byte CREDIT = 48;		// B
+			static final byte DEBIT = 64;		// B
+			static final byte GET_BALANCE = 80;		// B
+			static final byte UNBLOCK = 96;		// B
+			static final byte CHANGE_PIN = 112;		// B
+			static final short MAX_BALANCE = 32767;		// S
+			static final short MAX_TRANSACTION_AMOUNT = 203;		// S
+			static final byte PIN_TRY_LIMIT = 3;		// B
+			static final byte MAX_PIN_SIZE = 8;		// B
+			static final byte MIN_PIN_SIZE = 4;		// B
+			static final short SW_VERIFICATION_FAILED = 25362;		// S
+			static final short SW_PIN_VERIFICATION_REQUIRED = 25361;		// S
+			static final short SW_INVALID_TRANSACTION_AMOUNT = 27267;		// S
+			private static final byte TMP_SIZE = 8;		// B
+			static final short SW_EXCEED_MAXIMUM_BALANCE = 27268;		// S
+			static final short SW_NEGATIVE_BALANCE = 27269;		// S
+			static final byte STATE_INITIAL = 1;		// B
+			static final byte STATE_PREPERSONALISED = 2;		// B
+			static final byte STATE_PERSONALISED = 3;		// B
+			static byte state;		// B
+			private static final short SW_PIN_INCORRECT_TRIES_LEFT = 25536;		// S
+		}
+
+		.publicMethodTable 4 {
+			equals(Ljava/lang/Object;)Z;
+			register()V;
+			register([BSB)V;
+			selectingApplet()Z;
+			deselect()V;
+			getShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;;
+			select()Z;
+			process(Ljavacard/framework/APDU;)V;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method public static install([BSB)V 0 {
+			.stack 4;
+			.locals 0;
+
+				L0:	new 4;		// sid2/CompteurApplet
+					aload_0;
+					sload_1;
+					sload_2;
+					invokespecial 27;		// sid2/CompteurApplet.<init>([BSB)V
+					return;
+		}
+
+		.method protected <init>([BSB)V 1 {
+			.stack 5;
+			.locals 1;
+
+				L0:	aload_0;
+					invokespecial 9;		// javacard/framework/Applet.<init>()V
+					aload_0;
+					getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					putfield_a 1;		// reference sid2/CompteurApplet.puc
+					aload_0;
+					new 5;		// javacard/framework/OwnerPIN
+					dup;
+					sconst_3;
+					bspush 8;
+					invokespecial 6;		// javacard/framework/OwnerPIN.<init>(BB)V
+					putfield_a 0;		// reference sid2/CompteurApplet.pin
+					sconst_1;
+					putstatic_b 7;		// byte sid2/CompteurApplet.state
+					aload_0;
+					bspush 8;
+					sconst_2;
+					invokestatic 8;		// javacard/framework/JCSystem.makeTransientByteArray(SB)[B
+					putfield_a 2;		// reference sid2/CompteurApplet.tmp
+					sconst_4;
+					newarray 11;
+					dup;
+					sconst_0;
+					sconst_1;
+					bastore;
+					dup;
+					sconst_1;
+					sconst_2;
+					bastore;
+					dup;
+					sconst_2;
+					sconst_3;
+					bastore;
+					dup;
+					sconst_3;
+					sconst_4;
+					bastore;
+					astore 4;
+					getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					aload 4;
+					sconst_0;
+					aload 4;
+					arraylength;
+					s2b;
+					invokevirtual 10;		// update([BSB)V
+					aload_0;
+					invokevirtual 11;		// register()V
+					return;
+		}
+
+		.method public select()Z 6 {
+			.stack 1;
+			.locals 0;
+
+				L0:	getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 12;		// getTriesRemaining()B
+					ifne L2;
+				L1:	sconst_0;
+					sreturn;
+				L2:	sconst_1;
+					sreturn;
+		}
+
+		.method public deselect()V 4 {
+			.stack 1;
+			.locals 0;
+
+				L0:	getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 13;		// reset()V
+					return;
+		}
+
+		.method public process(Ljavacard/framework/APDU;)V 7 {
+			.stack 2;
+			.locals 1;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_0;
+					invokevirtual 14;		// selectingApplet()Z
+					ifeq L2;
+				L1:	return;
+				L2:	aload_1;
+					invokevirtual 15;		// getBuffer()[B
+					astore_2;
+					aload_2;
+					sconst_0;
+					baload;
+					ifne L5;
+				L3:	aload_2;
+					sconst_1;
+					baload;
+					bspush -92;
+					if_scmpne L5;
+				L4:	return;
+				L5:	aload_2;
+					sconst_0;
+					baload;
+					bspush -80;
+					if_scmpeq L7;
+				L6:	sspush 28160;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	aload_2;
+					sconst_1;
+					baload;
+					slookupswitch L15 7 16 L11 32 L12 48 L10 64 L9 80 L8 96 L14 112 L13;
+				L8:	aload_0;
+					aload_1;
+					invokespecial 17;		// sid2/CompteurApplet.getBalance(Ljavacard/framework/APDU;)V
+					return;
+				L9:	aload_0;
+					aload_1;
+					invokespecial 18;		// sid2/CompteurApplet.debit(Ljavacard/framework/APDU;)V
+					return;
+				L10:	aload_0;
+					aload_1;
+					invokespecial 19;		// sid2/CompteurApplet.credit(Ljavacard/framework/APDU;)V
+					return;
+				L11:	aload_0;
+					aload_1;
+					invokespecial 20;		// sid2/CompteurApplet.init(Ljavacard/framework/APDU;)V
+					return;
+				L12:	aload_0;
+					aload_1;
+					invokespecial 21;		// sid2/CompteurApplet.verify(Ljavacard/framework/APDU;)V
+					return;
+				L13:	aload_0;
+					aload_1;
+					invokespecial 22;		// sid2/CompteurApplet.changePin(Ljavacard/framework/APDU;)V
+					return;
+				L14:	getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 23;		// resetAndUnblock()V
+					return;
+				L15:	sspush 27904;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+		}
+
+		.method private credit(Ljavacard/framework/APDU;)V {
+			.stack 3;
+			.locals 3;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 24;		// isValidated()Z
+					ifne L2;
+				L1:	sspush 25361;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_1;
+					invokevirtual 15;		// getBuffer()[B
+					astore_2;
+					aload_1;
+					invokevirtual 25;		// setIncomingAndReceive()S
+					s2b;
+					sstore_3;
+					sload_3;
+					sconst_1;
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_0;
+					aload_2;
+					sconst_5;
+					baload;
+					invokespecial 26;		// sid2/CompteurApplet.unsigned(B)S
+					sstore 4;
+					sload 4;
+					sspush 203;
+					if_scmpgt L6;
+				L5:	sload 4;
+					ifge L7;
+				L6:	sspush 27267;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	getfield_s_this 3;		// short sid2/CompteurApplet.balance
+					sload 4;
+					sadd;
+					s2b;
+					sspush 32767;
+					if_scmple L9;
+				L8:	sspush 27268;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	aload_0;
+					getfield_s_this 3;		// short sid2/CompteurApplet.balance
+					sload 4;
+					sadd;
+					putfield_s 3;		// short sid2/CompteurApplet.balance
+					return;
+		}
+
+		.method private debit(Ljavacard/framework/APDU;)V {
+			.stack 3;
+			.locals 3;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 24;		// isValidated()Z
+					ifne L2;
+				L1:	sspush 25361;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_1;
+					invokevirtual 15;		// getBuffer()[B
+					astore_2;
+					aload_1;
+					invokevirtual 25;		// setIncomingAndReceive()S
+					s2b;
+					sstore_3;
+					sload_3;
+					sconst_1;
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_0;
+					aload_2;
+					sconst_5;
+					baload;
+					invokespecial 26;		// sid2/CompteurApplet.unsigned(B)S
+					sstore 4;
+					sload 4;
+					sspush 203;
+					if_scmpgt L6;
+				L5:	sload 4;
+					ifge L7;
+				L6:	sspush 27267;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	getfield_s_this 3;		// short sid2/CompteurApplet.balance
+					sload 4;
+					ssub;
+					ifge L9;
+				L8:	sspush 27269;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	aload_0;
+					getfield_s_this 3;		// short sid2/CompteurApplet.balance
+					sload 4;
+					ssub;
+					putfield_s 3;		// short sid2/CompteurApplet.balance
+					return;
+		}
+
+		.method private init(Ljavacard/framework/APDU;)V {
+			.stack 3;
+			.locals 3;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 24;		// isValidated()Z
+					ifne L2;
+				L1:	sspush 25361;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_1;
+					invokevirtual 15;		// getBuffer()[B
+					astore_2;
+					aload_1;
+					invokevirtual 25;		// setIncomingAndReceive()S
+					s2b;
+					sstore_3;
+					sload_3;
+					sconst_1;
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_0;
+					aload_2;
+					sconst_5;
+					baload;
+					invokespecial 26;		// sid2/CompteurApplet.unsigned(B)S
+					sstore 4;
+					sload 4;
+					sspush 203;
+					if_scmpgt L6;
+				L5:	sload 4;
+					ifge L7;
+				L6:	sspush 27267;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	sload 4;
+					ifge L9;
+				L8:	sspush 27269;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	aload_0;
+					sload 4;
+					putfield_s 3;		// short sid2/CompteurApplet.balance
+					return;
+		}
+
+		.method private getBalance(Ljavacard/framework/APDU;)V {
+			.stack 4;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 24;		// isValidated()Z
+					ifne L2;
+				L1:	sspush 25361;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_1;
+					invokevirtual 15;		// getBuffer()[B
+					astore_2;
+					aload_1;
+					invokevirtual 28;		// setOutgoing()S
+					sstore_3;
+					sload_3;
+					sconst_2;
+					if_scmpge L4;
+				L3:	sspush 26368;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_1;
+					sconst_2;
+					invokevirtual 29;		// setOutgoingLength(S)V
+					aload_2;
+					sconst_0;
+					getfield_s_this 3;		// short sid2/CompteurApplet.balance
+					bspush 8;
+					sshr;
+					s2b;
+					bastore;
+					aload_2;
+					sconst_1;
+					getfield_s_this 3;		// short sid2/CompteurApplet.balance
+					sspush 255;
+					sand;
+					s2b;
+					bastore;
+					aload_1;
+					sconst_0;
+					sconst_2;
+					invokevirtual 30;		// sendBytes(SS)V
+					return;
+		}
+
+		.method private verify(Ljavacard/framework/APDU;)V {
+			.stack 4;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_1;
+					invokevirtual 15;		// getBuffer()[B
+					astore_2;
+					aload_1;
+					invokevirtual 25;		// setIncomingAndReceive()S
+					s2b;
+					sstore_3;
+					getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					aload_2;
+					sconst_5;
+					sload_3;
+					invokevirtual 31;		// check([BSB)Z
+					ifne L2;
+				L1:	sspush 25362;
+					getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 12;		// getTriesRemaining()B
+					sor;
+					invokestatic 16;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	return;
+		}
+
+		.method private unsigned(B)S {
+			.stack 2;
+			.locals 0;
+
+				L0:	sload_1;
+					sspush 255;
+					sand;
+					sreturn;
+		}
+
+		.method private changePin(Ljavacard/framework/APDU;)V {
+			.stack 4;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_1;
+					invokevirtual 15;		// getBuffer()[B
+					astore_2;
+					aload_1;
+					invokevirtual 25;		// setIncomingAndReceive()S
+					s2b;
+					sstore_3;
+					getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					aload_2;
+					sconst_5;
+					sload_3;
+					invokevirtual 10;		// update([BSB)V
+					getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 12;		// getTriesRemaining()B
+					pop;
+					getfield_a_this 0;		// reference sid2/CompteurApplet.pin
+					invokevirtual 23;		// resetAndUnblock()V
+					return;
+		}
+
+	}
+
+}
